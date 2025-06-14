@@ -77,7 +77,8 @@ export async function request(
         },
     });
 
-    if (response.headers.get('Content-Type') == 'application/json') {
+    const contentType = response.headers.get('Content-Type')??'';
+    if ((contentType.indexOf('application/json') ?? -1) >= 0) {
         return response.json();
     } else {
         return response.text();
