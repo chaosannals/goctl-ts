@@ -77,6 +77,10 @@ export async function request(
         },
     });
 
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+
     const contentType = response.headers.get('Content-Type')??'';
     if ((contentType.indexOf('application/json') ?? -1) >= 0) {
         return response.json();
