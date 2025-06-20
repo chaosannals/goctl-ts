@@ -2,9 +2,9 @@
 // goctl {{.Version}}
 
 {{range $i, $t := .Types}}
-export type {{$t.TypeName}} = { {{range $j, $m := $t.Members}}
+{{if gt (len $t.Members) 0}}export type {{$t.TypeName}} = { {{range $j, $m := $t.Members}}
     {{$m.PropertyName}}{{$m.OptionalTag}}: {{$m.PropertyType}};{{if $m.Comment}} // {{$m.Comment}}{{end}}{{end}}
-};
+};{{end}}
 {{range $j, $s := $t.SubTypes}}
 export type {{$s.TypeName}} = { {{range $j, $m := $s.Members}}
     {{$m.PropertyName}}{{$m.OptionalTag}}: {{$m.PropertyType}};{{if $m.Comment}} // {{$m.Comment}}{{end}}{{end}}
