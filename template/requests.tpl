@@ -1,3 +1,11 @@
+export class ApiError extends Error {
+    constructor(message: string, public data: any) {
+        super(message);
+        this.name = 'ApiError';
+        this.data = data;
+    }
+}
+
 export type Method =
     | "get"
     | "GET"
@@ -77,16 +85,15 @@ export async function request(
         },
     });
 
+    const contentType = response.headers.get('Content-Type')??'';
+    const isJson = (contentType.indexOf('application/json') ?? -1) >= 0;
+    const result = isJson ? response.json() : response.text();
+
     if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
+        throw new ApiError(`Response status: ${response.status}`, result);
     }
 
-    const contentType = response.headers.get('Content-Type')??'';
-    if ((contentType.indexOf('application/json') ?? -1) >= 0) {
-        return response.json();
-    } else {
-        return response.text();
-    }
+    return result;
 }
 
 function api<T>(
